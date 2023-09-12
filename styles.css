@@ -33,10 +33,12 @@
   }
 
   header {
-    background-color: #7a6081;
-    color: white;
+    background-color: #e7e7e7;
     padding: 2em;
-    text-align: center;
+  }
+
+  header h2 {
+    padding: 0;
   }
 
   main {
@@ -63,3 +65,35 @@
   h2 {
     padding: 1em 0 0.5em 0;
   }
+
+  nav {
+    background-color: var(--accent);
+    display: flex;
+    padding: .5em 2em;
+    gap: 1em;
+  }
+
+  nav a {
+    color: white
+  }
+
+  a span {
+    color: rgb(167, 167, 167);
+  }
+
+  .daemi {
+    list-style: square;
+  }
+  
+  hr {
+    margin: 0.5em 0 1em 0;
+  }
+
+  h4 {
+    padding-bottom: 0.5em;
+  }
+
+  hr {
+    border-top: #d8d8d8 1px solid;
+  }
+
