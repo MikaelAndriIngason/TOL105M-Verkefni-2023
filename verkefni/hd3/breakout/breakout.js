@@ -2,7 +2,7 @@ var canvas;
 var gl;
 
 // Núverandi staðsetning miðju ferningsins
-var box = vec2( 0.0, 0.0 );
+var cube = vec2( 0.0, 0.0 );
 
 // Stefna (og hraði) fernings
 var dX;
@@ -13,10 +13,15 @@ var maxX = 1.0;
 var maxY = 1.0;
 
 // Hálf breidd/hæð ferningsins
-var boxRad = 0.05;
+var cubeRad = 0.02;
 
-// Ferningurinn er upphaflega í miðjunni
-var vertices = new Float32Array([-0.05, -0.05, 0.05, -0.05, 0.05, 0.05, -0.05, 0.05]);
+// Staðsetning og hraði spaðans
+var paddlePos = vec2(0.0, -0.8);
+var paddleStepSize = 0.1;
+
+// Litir
+var paddleColor = vec4(0.0, 0.0, 1.0, 1.0);
+var cubeColor = vec4(1.0, 0.0, 0.0, 1.0);
 
 window.onload = function init() {
 
@@ -39,10 +44,17 @@ window.onload = function init() {
     gl.useProgram( program );
     
     var vertices = [
-        vec2( -0.1, -0.9 ),
-        vec2( -0.1, -0.86 ),
-        vec2(  0.1, -0.86 ),
-        vec2(  0.1, -0.9 ) 
+        // Paddle
+        vec2( -0.2, -0.02 ),
+        vec2( -0.2, 0.02 ),
+        vec2(  0.2, 0.02 ),
+        vec2(  0.2, -0.02 ),
+
+        // Cube
+        vec2(-cubeRad, -cubeRad),
+        vec2(cubeRad, -cubeRad),
+        vec2(cubeRad, cubeRad),
+        vec2(-cubeRad, cubeRad),
     ];
     
     // Load the data into the GPU
@@ -55,25 +67,21 @@ window.onload = function init() {
     gl.vertexAttribPointer( vPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( vPosition );
 
-    locBox = gl.getUniformLocation( program, "boxPos" );
+    locCube = gl.getUniformLocation( program, "cubePos" );
+    colorLoc = gl.getUniformLocation( program, "fColor" );
 
     // Event listener for keyboard
     window.addEventListener("keydown", function(e){
-        switch( e.keyCode ) {
-            case 37:	// vinstri ör
-                xmove = -0.04;
+        switch( e.key ) {
+            case "ArrowLeft":
+                if (paddlePos[0] + paddleStepSize* -2 > -maxX)
+                    paddlePos[0] -= paddleStepSize;
                 break;
-            case 39:	// hægri ör
-                xmove = 0.04;
+            case "ArrowRight":
+                if (paddlePos[0] + paddleStepSize* 2 < maxX)
+                    paddlePos[0] += paddleStepSize;
                 break;
-            default:
-                xmove = 0.0;
         }
-        for(i=0; i<4; i++) {
-            vertices[i][0] += xmove;
-        }
-
-        gl.bufferSubData(gl.ARRAY_BUFFER, 0, flatten(vertices));
     } );
 
     render();
@@ -81,20 +89,51 @@ window.onload = function init() {
 
 
 function render() {
-
-    // Láta ferninginn skoppa af veggjunum
-    if (Math.abs(box[0] + dX) > maxX - boxRad) dX = -dX;
-    if (Math.abs(box[1] + dY) > maxY - boxRad) dY = -dY;
-
-    // Uppfæra staðsetningu
-    box[0] += dX;
-    box[1] += dY;
-    
     gl.clear( gl.COLOR_BUFFER_BIT );
 
-    gl.uniform2fv( locBox, flatten(box));
+    renderBouncingCube();
+    renderPaddle();
 
-    gl.drawArrays( gl.TRIANGLE_FAN, 0, 4 );
+    detectCollision();
 
     window.requestAnimFrame(render);
+}
+
+function renderBouncingCube() {
+    // Láta ferninginn skoppa af veggjunum
+    if (Math.abs(cube[0] + dX) > maxX - cubeRad) dX = -dX;
+    if (Math.abs(cube[1] + dY) > maxY - cubeRad) dY = -dY;
+
+    // Uppfæra staðsetningu
+    cube[0] += dX;
+    cube[1] += dY;
+
+    gl.uniform4fv(colorLoc, cubeColor);
+
+    gl.uniform2fv( locCube, flatten(cube));
+
+    gl.drawArrays( gl.TRIANGLE_FAN, 4, 4 );
+}
+
+function renderPaddle() {
+
+    gl.uniform4fv(colorLoc, paddleColor);
+
+    gl.uniform2fv(locCube, flatten(paddlePos))
+    gl.drawArrays( gl.TRIANGLE_FAN, 0, 4 );
+}
+
+function detectCollision() {
+    var paddleBounds = [
+        paddlePos[0] - 0.2,
+        paddlePos[0] + 0.2,
+        paddlePos[1] - 0.02,
+        paddlePos[1] + 0.02,
+    ]
+
+    if ((cube[1] + dY > paddleBounds[2]) && (cube[1] + dY < paddleBounds[3])) {
+        if ((cube[0] + dX > paddleBounds[0]) && (cube[0] + dX < paddleBounds[1])) {
+            dY = -dY;
+        }
+    }
 }

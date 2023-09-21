@@ -3,14 +3,14 @@
 
 <script id="vertex-shader" type="x-shader/x-vertex">
 
-uniform vec2 boxPos;
+uniform vec2 cubePos;
 attribute vec4 vPosition;
 
 void main()
 {
     vec4 t = vPosition;
     
-    t.xy += boxPos;
+    t.xy += cubePos;
     
     gl_Position = t;
 }
@@ -19,12 +19,12 @@ void main()
 <script id="fragment-shader" type="x-shader/x-fragment">
 
 precision mediump float;
+uniform vec4 fColor;
 
-varying vec4 fColor;
 void
 main()
 {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = fColor;
 }
 </script>
 
@@ -34,6 +34,7 @@ main()
 <script type="text/javascript" src="breakout.js"></script>
 
 <body>
-<canvas id="gl-canvas" width="1000" height="600">
+<canvas id="gl-canvas" width="600" height="600"></canvas>
+<p>Til að færa spaðan, notaðu örvatakkana</p>
 </body>
 </html>
