@@ -5,12 +5,8 @@ var tankSize = 4.0;
 var amountOfFishes = 100;
 var fishes = [];
 
-// Hraði sporðs og hliðarugga
-var incTail = 2.0;
-var incFins = 2.0;
-
 // Hjarðarreglur
-var seperationScale = 0.02;
+var separationScale = 0.02;
 var alignmentScale = 0.02;
 var cohesionScale = 0.02;
 
@@ -368,9 +364,9 @@ function flocking(fish) {
             neighbors++;
             
             // Heldur fjarlægð frá öðrum fiskum
-            var diff = normalize(subtract(fish.position, otherFish.position));
-            diff = scale(1 / distance(fish.position, otherFish.position), diff);
-            separation = add(separation, diff);
+            var difference = subtract(fish.position, otherFish.position);
+            difference = normalize(difference);
+            separation = add(separation, difference);
 
             // Stefna hjarðarinnar
             alignment = add(alignment, otherFish.direction);
@@ -382,10 +378,10 @@ function flocking(fish) {
 
     // Reiknar nýja stefnu fiskins
     if (neighbors > 0) { 
-        // Setur alignment sem meðalstefnu hjarðarinnar, annars stefnu fiskins
+        // Setur alignment sem meðalstefnu hjarðarinnar
         alignment = scale(1 / neighbors, alignment);
 
-        // Setur cohesion sem meðalstaðsetningu hjarðarinnar, annars stefnu fiskins  
+        // Setur cohesion sem meðalstaðsetningu hjarðarinnar  
         cohesion = scale(1 / neighbors, cohesion);
         cohesion = subtract(cohesion, fish.position);
 
@@ -393,7 +389,7 @@ function flocking(fish) {
         alignment = normalize(alignment);
         cohesion = normalize(cohesion);
 
-        separation = scale(seperationScale, separation);
+        separation = scale(separationScale, separation);
         alignment = scale(alignmentScale, alignment);
         cohesion = scale(cohesionScale, cohesion);
 
@@ -426,14 +422,13 @@ function changeAmountOfFishes(value) {
     createFishes();
 }
 
-
 var separationInput = document.getElementById("separation");
 var alignmentInput = document.getElementById("alignment");
 var cohesionInput = document.getElementById("cohesion");
 
-// Update the strengths when input changes
+// Atburðaföll fyrir hjarðarreglur
 separationInput.addEventListener("input", function () {
-    seperationScale = parseFloat(separationInput.value);
+    separationScale = parseFloat(separationInput.value);
 });
 
 alignmentInput.addEventListener("input", function () {
