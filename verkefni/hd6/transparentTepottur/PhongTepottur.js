@@ -1,6 +1,10 @@
 var canvas;
 var gl;
 
+var size = 1.0;
+var speed = 0.05;
+var time = 0.0;
+
 var index = 0;
 
 var pointsArray = [];
@@ -129,8 +133,11 @@ window.onload = function init() {
     window.addEventListener("keydown", function(e){
         switch( e.key ) {
             case 'ArrowUp':
+                speed += 0.01;
                 break;
             case 'ArrowDown':
+                if ( speed >= 0.009 )
+                    speed -= 0.01;
                 break;
             case 'ArrowLeft':
                 if ( brightnessThreshold > 1.0 )
@@ -160,9 +167,15 @@ function render() {
 
     gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+    time += speed;
+
+    scale = 0.5 + (1.0 - 0.5) * (Math.sin(time) + 1) / 2;
+
     modelViewMatrix = lookAt( vec3(0.0, 0.0, zDist), at, up );
     modelViewMatrix = mult( modelViewMatrix, rotateY( -spinY ) );
     modelViewMatrix = mult( modelViewMatrix, rotateX( spinX ) );
+
+    modelViewMatrix = mult( modelViewMatrix, scalem( scale, scale, scale ) );
 
     gl.uniform1f( thresholdLoc, brightnessThreshold );
 

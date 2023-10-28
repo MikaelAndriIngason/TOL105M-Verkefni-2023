@@ -1,10 +1,3 @@
-/////////////////////////////////////////////////////////////////
-//    Sýnidæmi í Tölvugrafík
-//     Tepottur sem litaður er með Phong litun.  Hægt að snúa
-//     honum með músinni og þysja með músarhjóli
-//
-//    Hjálmtýr Hafsteinsson, október 2023
-/////////////////////////////////////////////////////////////////
 var canvas;
 var gl;
 
