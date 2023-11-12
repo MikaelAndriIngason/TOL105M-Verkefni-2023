@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Verkefni 3 - Centipede</title>
+        <style>
+            body { margin: 0; }
+            canvas { display: block; }
+            #points {
+                position: absolute;
+                top: 1em;
+                width: 100%;
+                text-align: center;
+                color: white;
+                font-size: 2em;
+            }
+        </style>
+        <script type="importmap">
+            {
+              "imports": {
+                "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+              }
+            }
+          </script>
+    </head>
+
+    <body>
+        <div id="points">0</div>
+        <script src="https://threejs.org/build/three.js"></script>
+        <script type="module" src="./centipede.js"></script>
+        <p style="position: absolute; color: white; left: 1em; top: 1em;">Nota WASD eða örvatakkana til að hreyfa sig<br>Spacebar til að skjóta<br>C til að skipta um sjónarhorn</p>
+    </body>
+</html>
