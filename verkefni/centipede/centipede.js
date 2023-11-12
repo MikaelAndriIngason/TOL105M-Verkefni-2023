@@ -67,6 +67,11 @@ mainCamera.rotation.x = helpers.degreesToRadians(-45);
 
 // Create the secondary camera
 const secondaryCamera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+// Create the third camera
+const thirdCamera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+thirdCamera.position.set(0, 12, 0);
+thirdCamera.rotation.x = helpers.degreesToRadians(-90);
   
 // Set the initial active camera
 let activeCamera = mainCamera;
@@ -144,7 +149,13 @@ Functions
  * Function to toggle between the main and secondary camera
  */
 function toggleCamera() {
-    activeCamera = activeCamera === mainCamera ? secondaryCamera : mainCamera;
+    if (activeCamera === mainCamera) {
+        activeCamera = secondaryCamera;
+    } else if (activeCamera === secondaryCamera) {
+        activeCamera = thirdCamera;
+    } else {
+        activeCamera = mainCamera;
+    }
 }
 
 /**
@@ -177,7 +188,8 @@ function createMushroom(x, z) {
 function shoot() {
     const bulletGeometry = new BoxGeometry(0.1, 0.1, 1);
     const bullet = new Mesh(bulletGeometry, bulletMaterial);
-    bullet.position.copy(player.position); // Set the initial position of the bullet to the player's position
+    // Spawn the bullet in the player's position
+    bullet.position.copy(player.position);
     scene.add(bullet);
     bullets.push(bullet);
 }
